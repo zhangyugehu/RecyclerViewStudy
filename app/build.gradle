@@ -30,4 +30,5 @@ dependencies {
     compile 'com.android.support:design:25.0.0'
     compile 'io.reactivex:rxjava:1.1.0'
     compile 'io.reactivex:rxandroid:1.1.0'
+    compile 'com.yqritc:recyclerview-flexibledivider:1.4.0'
 }

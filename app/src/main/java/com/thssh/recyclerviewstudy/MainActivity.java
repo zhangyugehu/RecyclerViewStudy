@@ -1,8 +1,11 @@
 package com.thssh.recyclerviewstudy;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.SystemClock;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,6 +16,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 import android.widget.Toast;
+
+import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,21 +44,35 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        List<String> data = genrenterMockDatas();
+        final List<String> data = genrenterMockDatas();
         setContentView(R.layout.activity_main);
         srlContainer = (SwipeRefreshLayout) findViewById(R.id.srl_container);
         mAdapter = new MyRecycleAdapter(data);
         mLayoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
         rvList = (RecyclerView) findViewById(R.id.rv_list);
         rvList.setItemAnimator(new DefaultItemAnimator());
-//        rvList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        rvList.setLayoutManager(new GridLayoutManager(this,3));
+        rvList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+//        rvList.setLayoutManager(new GridLayoutManager(this, 3));
+//        rvList.setLayoutManager(mLayoutManager);
 //        rvList.addItemDecoration(new MyItemDecoration(this, LinearLayoutManager.VERTICAL));
-        rvList.addItemDecoration(new RecyclerView.ItemDecoration(){
+//        rvList.addItemDecoration(new RecyclerView.ItemDecoration(){
+//            @Override
+//            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+//                super.getItemOffsets(outRect, view, parent, state);
+//                outRect.set(0, 5, 0, 10);
+//            }
+//        });
+
+        rvList.addItemDecoration(new HorizontalDividerItemDecoration.Builder(this)
+//                .color(Color.GRAY)
+                .drawable(R.drawable.shape_decoration_1)
+                .size(3)
+                .build());
+
+        mAdapter.setOnItemClickListener(new MyRecycleAdapter.OnItemClickListener() {
             @Override
-            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-                super.getItemOffsets(outRect, view, parent, state);
-                outRect.set(10, 10, 10, 10);
+            public void onClick(View v, int position) {
+                Snackbar.make(v, data.get(position), Snackbar.LENGTH_SHORT).show();
             }
         });
         rvList.setAdapter(mAdapter);
@@ -61,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
         srlContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                Observable.timer(5, TimeUnit.SECONDS)
+                Observable.timer(4, TimeUnit.SECONDS)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
                         .subscribe(new Action1<Long>() {
@@ -70,12 +89,40 @@ public class MainActivity extends AppCompatActivity {
                                 srlContainer.setRefreshing(false);
                             }
                         });
-//                Toast.makeText(MainActivity.this, "刷新..." , Toast.LENGTH_SHORT).show();
             }
         });
         srlContainer.setColorSchemeResources(android.R.color.holo_red_light, android.R.color.holo_blue_light,
                 android.R.color.holo_green_light, android.R.color.darker_gray);
         srlContainer.setRefreshing(false);
+        rvList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            boolean isSlidingToLast = false;
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+
+                LinearLayoutManager manager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                // 当不滚动时
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    // 获取最后一个完全显示的item position
+                    int lastVisibleItem = manager.findLastCompletelyVisibleItemPosition();
+                    int totalItemCount = manager.getItemCount();
+
+                    // 判断是否滚动到底部并且是向下滑动
+                    if (lastVisibleItem == (totalItemCount - 1) && isSlidingToLast) {
+                        // 加载更多
+                        Snackbar.make(recyclerView, "加载更多", Snackbar.LENGTH_SHORT).show();
+                    }
+                }
+
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                isSlidingToLast = dy > 0;
+            }
+        });
         Toast.makeText(MainActivity.this, "刷新..." , Toast.LENGTH_SHORT).show();
     }
 
@@ -88,42 +135,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @NonNull
     private List<String> genrenterMockDatas() {
         List<String> list = new ArrayList<>();
         String[] data = getResources().getStringArray(R.array.data);
         return Arrays.asList(data);
-//        list.add("sdfsadfsadfsadfsadf 1");
-//        list.add("f 2");
-//        list.add("dsds 3");
-//        list.add("sdfsadfsadfsadfsadf 4");
-//        list.add("fff 5");
-//        list.add("sdfsadfsadfsadfsadf");
-//        list.add("sdfsadfsadfsadfsadfsdfsadfsadfsadfsadfsdfsadfsadfsadfsadf");
-//        list.add("sdfsadfsadfsadfsadf");
-//        list.add("sdfsadfsadfsadfsadf");
-//        list.add("sdfsadfsadfsadfsadfsdfsadfsadfsadfsadfsdfsadfsadfsadfsadf");
-//        list.add("sdfsadfsadfsadfsadf");
-//        list.add("sdfsadfsadfsadfsadf");
-//        list.add("sdfsadfsadfsadfsadfsdfsadfsadfsadfsadfsdfsadfsadfsadfsadf");
-//        list.add("sdfsadfsadfsadfsadf");
-//        list.add("sdfsadfsadfsadfsadf");
-//        list.add("sdfsadfsadfsadfsadfsdfsadfsadfsadfsadfsdfsadfsadfsadfsadf");
-//        list.add("sdfsadfsadfsadfsadf");
-//        list.add("sdfsadfsadfsadfsadf");
-//        list.add("sdfsadfsadfsadfsadfsdfsadfsadfsadfsadfsdfsadfsadfsadfsadf");
-//        list.add("sdfsadfsadfsadfsadf");
-//        list.add("sdfsadfsadfsadfsadf");
-//        list.add("dddd");
-//        list.add("sdfsadfsadfsadfsadf");
-//        list.add("dd");
-//        list.add("sdfsadfsadfsadfsadf");
-//        list.add("sdfsadfsadfsadfsadf");
-//        list.add("sdfsadfsadfsadfsadf");
-//        list.add("sdfsadfsadfsadfsadf");
-//        list.add("sdfsadfsadfsadfsadf");
-//        list.add("sdfsadfsadfsadfsadf");
-//        list.add("sdfsadfsadfsadfsadf");
-//        list.add("sdfsadfsadfsadfsadf");
-//        return list;
     }
 }

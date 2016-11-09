@@ -15,9 +15,18 @@ import java.util.List;
 
 public class MyRecycleAdapter extends RecyclerView.Adapter<MyRecycleAdapter.MyRecycleViewHolder>{
     private List<String> mDatas;
+    private OnItemClickListener listener;
+
+    public static interface OnItemClickListener {
+        void onClick(View v, int position);
+    }
 
     public MyRecycleAdapter(List<String> data) {
         this.mDatas = data;
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener){
+        this.listener = listener;
     }
 
     @Override
@@ -27,15 +36,16 @@ public class MyRecycleAdapter extends RecyclerView.Adapter<MyRecycleAdapter.MyRe
     }
 
     @Override
-    public void onBindViewHolder(MyRecycleViewHolder holder, int position) {
+    public void onBindViewHolder(MyRecycleViewHolder holder, final int position) {
         if(mDatas == null || mDatas.size() < position || position < 0) return;
         String posItem = mDatas.get(position);
-        if(position%2==0) {
-            holder.tvTitle.setBackgroundColor(Color.DKGRAY);
-        }else{
-            holder.tvTitle.setBackgroundColor(Color.LTGRAY);
-        }
         holder.tvTitle.setText(posItem);
+        holder.tvTitle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.onClick(view, position);
+            }
+        });
     }
 
     @Override
