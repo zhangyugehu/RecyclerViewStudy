@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">RecyclerViewStudy</string>
+    <array name="data">
+        <item>9个实用又有趣的心理学技巧！</item>
+        <item>11月8日的美国总统选举投票不是选出总统——奇葩的美国总统选举制度</item>
+        <item>Trump川普，“最讨人厌”的美国总统？</item>
+        <item>美国总统大选这场闹剧终于尘埃落定</item>
+        <item>你的情绪，我来照顾</item>
+        <item>android 自定义view之选座功能</item>
+        <item>WebView的使用及实战</item>
+        <item>Android——CoordinatorLayout之Behavior入门学习(上)</item>
+        <item>RxJava学习笔记（基本用法）</item>
+        <item>实现智能读报（逐字朗读+自动滚屏）</item>
+        <item>Java与数据库的桥梁——JDBC</item>
+        <item>炫酷：一句代码实现标题栏、导航栏滑动隐藏，ByeBurger库的使用和实现</item>
+        <item>深入Android内存泄露</item>
+        <item>热修复框架HotFix源码解析</item>
+        <item>Android：玩转购物车界面和逻辑只需要一层Recyclerview，一个二层for循环和三个属性</item>
+        <item>Android面试一天一题（Day 30：老外的自定义View面试题）</item>
+        <item>Android组件化开发实践</item>
+        <item>韩非子鱼《慢煮光阴》上线</item>
+    </array>
+</resources>
